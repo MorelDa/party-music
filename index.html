@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Party Music | Ultra Pro Clean</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink: #ff2d55;
+            --pink-glow: rgba(255, 45, 85, 0.5);
+            --bg-dark: #050505;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-dark); color: white; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+        /* --- HEADER --- */
+        header { height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; background: rgba(0,0,0,0.3); z-index: 10; }
+        .search-container { background: #1a1a1a; border-radius: 500px; padding: 12px 25px; width: 500px; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
+        .search-container:focus-within { border-color: var(--pink); box-shadow: 0 0 15px rgba(255, 45, 85, 0.2); }
+        .search-container input { background: none; border: none; color: white; width: 100%; margin-left: 12px; outline: none; font-size: 15px; }
+
+        /* --- LAYOUT --- */
+        .app-container { display: flex; flex: 1; overflow: hidden; }
+        
+        .side-nav {
+            width: 90px; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(15px);
+            border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column;
+            align-items: center; padding: 40px 0; gap: 40px;
+        }
+        .nav-item {
+            width: 55px; height: 55px; display: flex; align-items: center; justify-content: center;
+            border-radius: 18px; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            color: #444; font-size: 26px;
+        }
+        .nav-item:hover { color: white; background: var(--glass); transform: scale(1.15) translateY(-5px); }
+        .nav-item.active { color: var(--pink); background: rgba(255, 45, 85, 0.1); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+
+        .content-scroll {
+            flex: 1; padding: 40px; overflow-y: auto; scroll-behavior: smooth;
+            background: radial-gradient(circle at 10% 10%, #1d080d 0%, #050505 50%);
+        }
+
+        /* --- CARRUSEL --- */
+        .promo-slider {
+            width: 100%; height: 300px; border-radius: 25px; overflow: hidden; position: relative; 
+            margin-bottom: 50px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+        }
+        .slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: 1.2s ease-in-out; background-size: cover; background-position: center; }
+        .slide.active { opacity: 1; }
+        .slide-content { background: linear-gradient(to right, rgba(0,0,0,0.7), transparent); width: 100%; height: 100%; display: flex; align-items: center; padding: 60px; font-size: 45px; font-weight: 900; letter-spacing: -2px; }
+
+        /* --- GRIDS --- */
+        .section-title { font-size: 28px; font-weight: 900; margin: 45px 0 25px; letter-spacing: -1px; text-transform: capitalize; }
+        .grid-pro { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 30px; margin-bottom: 40px; }
+
+        .pro-card {
+            background: var(--bg-card); padding: 20px; border-radius: 24px; cursor: pointer;
+            transition: 0.4s; border: 1px solid rgba(255,255,255,0.03); position: relative;
+        }
+        .pro-card:hover { transform: translateY(-12px); background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.15); box-shadow: 0 20px 40px rgba(0,0,0,0.7); }
+        .pro-card img { width: 100%; aspect-ratio: 1; border-radius: 15px; object-fit: cover; margin-bottom: 15px; }
+
+        /* --- PLAYER --- */
+        footer {
+            height: 110px; background: rgba(5,5,5,0.98); backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; padding: 0 40px;
+        }
+        .info-box { width: 30%; display: flex; align-items: center; gap: 20px; }
+        .info-box img { width: 70px; height: 70px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.5); object-fit: cover; }
+        
+        .controls-box { width: 40%; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .main-btns { display: flex; align-items: center; gap: 35px; font-size: 24px; }
+        .play-main { width: 50px; height: 50px; background: white; color: black; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; padding-left: 3px; }
+        .play-main:hover { transform: scale(1.1); box-shadow: 0 0 20px white; }
+
+        .progress-container { width: 100%; display: flex; align-items: center; gap: 15px; font-size: 12px; color: #666; }
+        .bar-wrapper { flex: 1; height: 6px; background: #222; border-radius: 10px; cursor: pointer; position: relative; }
+        .bar-progress { height: 100%; background: linear-gradient(90deg, var(--pink), #ff5e7e); width: 0%; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div style="font-weight: 950; color: var(--pink); font-size: 26px; letter-spacing: -1.5px;">PARTY MUSIC</div>
+    <div class="search-container">
+        <span>🔍</span>
+        <input type="text" id="searchInput" placeholder="¿Qué quieres escuchar hoy?" onkeyup="filterSongs()">
+    </div>
+    <div style="width: 150px;"></div> 
+</header>
+
+<div class="app-container">
+    <nav class="side-nav">
+        <div class="nav-item active">🏠</div>
+        <div class="nav-item">🔍</div>
+        <div class="nav-item">📻</div>
+        <div class="nav-item">❤️</div>
+    </nav>
+
+    <main class="content-scroll" id="mainScroll">
+        <div class="promo-slider">
+            <div class="slide active" style="background-image: url('https://picsum.photos/1200/400?random=1');">
+                <div class="slide-content">SIENTE LA ENERGÍA 🎵</div>
+            </div>
+            <div class="slide" style="background-image: url('https://picsum.photos/1200/400?random=2');">
+                <div class="slide-content">MÚSICA VARIADA 2026 🚀</div>
+            </div>
+        </div>
+
+        <div id="dynamicSections">
+            </div>
+    </main>
+</div>
+
+<footer>
+    <div class="info-box">
+        <img src="https://via.placeholder.com/70" id="p-img">
+        <div>
+            <div id="p-title" style="font-weight: 800; font-size: 16px;">Party Music Pro</div>
+            <div id="p-artist" style="color: #888; font-size: 13px;">Selecciona una pista</div>
+        </div>
+    </div>
+    <div class="controls-box">
+        <div class="main-btns">
+            <span onclick="changeTrack(-1)" style="cursor:pointer">⏮</span>
+            <div class="play-main" id="btn-play" onclick="togglePlay()">▶</div>
+            <span onclick="changeTrack(1)" style="cursor:pointer">⏭</span>
+        </div>
+        <div class="progress-container">
+            <span id="cur-time">0:00</span>
+            <div class="bar-wrapper" id="bar-seek"><div class="bar-progress" id="bar-fill"></div></div>
+            <span id="total-time">0:00</span>
+        </div>
+    </div>
+    <div style="width:30%; display:flex; justify-content:flex-end; gap:20px; color:#444; font-size:20px">
+        <span>🎤</span><span>🔊</span>
+    </div>
+</footer>
+
+<audio id="main-audio"></audio>
+
+<script>
+    const audio = document.getElementById('main-audio');
+    let musicData = [];
+    let currentIdx = 0;
+
+    async function loadData() {
+        try {
+            const response = await fetch('datos.json');
+            musicData = await response.json();
+            renderDynamic();
+        } catch (error) {
+            console.error("Error cargando datos.json", error);
+        }
+    }
+
+    function renderDynamic() {
+        const container = document.getElementById('dynamicSections');
+        container.innerHTML = '';
+
+        // Agrupamos por etiqueta (type)
+        const sections = {};
+        musicData.forEach((song, index) => {
+            if (!sections[song.type]) sections[song.type] = [];
+            sections[song.type].push({ ...song, originalIndex: index });
+        });
+
+        // Creamos cada sección en el HTML
+        for (const type in sections) {
+            const sectionDiv = document.createElement('div');
+            sectionDiv.innerHTML = `<h2 class="section-title">${type}</h2>`;
+            
+            const grid = document.createElement('div');
+            grid.className = 'grid-pro';
+
+            sections[type].forEach(song => {
+                const card = document.createElement('div');
+                card.className = 'pro-card';
+                card.innerHTML = `
+                    <img src="${song.img}" onerror="this.src='https://via.placeholder.com/200'">
+                    <div>
+                        <b style="font-size:15px">${song.t}</b><br>
+                        <small style="color:gray">${song.a}</small>
+                    </div>
+                `;
+                card.onclick = () => playSong(song.originalIndex);
+                grid.appendChild(card);
+            });
+
+            sectionDiv.appendChild(grid);
+            container.appendChild(sectionDiv);
+        }
+    }
+
+    function playSong(i) {
+        currentIdx = i;
+        const s = musicData[i];
+        document.getElementById('p-img').src = s.img;
+        document.getElementById('p-title').innerText = s.t;
+        document.getElementById('p-artist').innerText = s.a;
+        audio.src = s.file; 
+        audio.play();
+        document.getElementById('btn-play').innerText = "⏸";
+    }
+
+    function togglePlay() {
+        if(!audio.src) { if(musicData.length > 0) playSong(0); return; }
+        if(audio.paused) { audio.play(); document.getElementById('btn-play').innerText = "⏸"; }
+        else { audio.pause(); document.getElementById('btn-play').innerText = "▶"; }
+    }
+
+    function changeTrack(dir) {
+        if(musicData.length === 0) return;
+        currentIdx = (currentIdx + dir + musicData.length) % musicData.length;
+        playSong(currentIdx);
+    }
+
+    audio.ontimeupdate = () => {
+        const pct = (audio.currentTime / audio.duration) * 100 || 0;
+        document.getElementById('bar-fill').style.width = pct + "%";
+        
+        const curM = Math.floor(audio.currentTime / 60);
+        const curS = Math.floor(audio.currentTime % 60);
+        document.getElementById('cur-time').innerText = `${curM}:${curS < 10 ? '0'+curS : curS}`;
+
+        if(!isNaN(audio.duration)) {
+            const totM = Math.floor(audio.duration / 60);
+            const totS = Math.floor(audio.duration % 60);
+            document.getElementById('total-time').innerText = `${totM}:${totS < 10 ? '0'+totS : totS}`;
+        }
+    };
+
+    document.getElementById('bar-seek').onclick = (e) => {
+        if(!audio.duration) return;
+        audio.currentTime = (e.offsetX / e.currentTarget.offsetWidth) * audio.duration;
+    };
+
+    // Carrusel Automático
+    let slideIdx = 0;
+    const slides = document.querySelectorAll('.slide');
+    if(slides.length > 0) {
+        setInterval(() => {
+            slides[slideIdx].classList.remove('active');
+            slideIdx = (slideIdx + 1) % slides.length;
+            slides[slideIdx].classList.add('active');
+        }, 5000);
+    }
+
+    function filterSongs() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const cards = document.querySelectorAll('.pro-card');
+        cards.forEach(card => {
+            const text = card.innerText.toLowerCase();
+            card.style.display = text.includes(query) ? 'block' : 'none';
+        });
+    }
+
+    loadData();
+</script>
+</body>
+</html>
