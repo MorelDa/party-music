@@ -3,187 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>Party Music Pro | Premium Experience</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <title>Party Music Pro | Full Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --accent: #ff2d55;
-            --accent-glow: rgba(255, 45, 85, 0.5);
             --bg: #030303;
-            --card-glass: rgba(255, 255, 255, 0.03);
+            --glass: rgba(255, 255, 255, 0.04);
             --border: rgba(255, 255, 255, 0.08);
             --text: #ffffff;
             --text-dim: #929292;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            background: var(--bg); 
-            color: var(--text); 
-            height: 100vh; 
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
+        body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        /* FONDO ESTÉTICO */
-        .glow-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 10% 10%, #1a080c 0%, transparent 40%),
-                        radial-gradient(circle at 90% 90%, #0a0a0f 0%, transparent 40%);
-            z-index: -1;
-        }
-
-        /* CONTENIDO */
-        .main-scroll {
-            flex: 1; overflow-y: auto; padding: 30px; padding-bottom: 160px;
-            scrollbar-width: none;
-        }
+        /* SCROLL Y HERO */
+        .main-scroll { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 140px; scrollbar-width: none; }
         .main-scroll::-webkit-scrollbar { display: none; }
+        .hero { width: 100%; height: 200px; border-radius: 28px; overflow: hidden; position: relative; margin-bottom: 30px; border: 1px solid var(--border); }
+        .slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: 1s; background-size: cover; background-position: center; }
+        .slide.active { opacity: 1; }
+        .slide-content { width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); display: flex; align-items: flex-end; padding: 20px; }
 
-        /* HERO SLIDER PERFECCIONADO */
-        .hero {
-            width: 100%; height: 260px; border-radius: 32px; overflow: hidden;
-            position: relative; margin-bottom: 50px;
-            border: 1px solid var(--border);
-        }
-        .slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: 1.2s cubic-bezier(0.4, 0, 0.2, 1); background-size: cover; background-position: center; }
-        .slide.active { opacity: 1; transform: scale(1.05); }
-        .slide-content { 
-            width: 100%; height: 100%; 
-            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 70%); 
-            display: flex; align-items: flex-end; padding: 40px;
-        }
-        .slide-content h2 { font-size: 42px; font-weight: 800; letter-spacing: -1px; }
-
-        /* SECCIONES Y CARRUSELES */
-        .section { margin-bottom: 45px; }
-        .section-title { font-size: 24px; font-weight: 800; margin-bottom: 25px; padding-left: 5px; }
-
-        .row-container {
-            display: flex; overflow-x: auto; gap: 24px; padding: 10px 5px;
-            scroll-snap-type: x mandatory;
-        }
+        /* SECCIONES */
+        .section { margin-bottom: 30px; }
+        .section-title { font-size: 18px; font-weight: 800; margin-bottom: 15px; }
+        .row-container { display: flex; overflow-x: auto; gap: 15px; padding: 5px; scroll-snap-type: x mandatory; }
         .row-container::-webkit-scrollbar { display: none; }
+        .song-card { flex: 0 0 145px; scroll-snap-align: start; background: var(--glass); border: 1px solid var(--border); padding: 10px; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .song-card img { width: 100%; aspect-ratio: 1; border-radius: 15px; object-fit: cover; margin-bottom: 8px; }
+        .song-card b { display: block; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .song-card span { font-size: 10px; color: var(--text-dim); }
 
-        /* TARJETA DE CRISTAL */
-        .song-card {
-            flex: 0 0 180px; scroll-snap-align: start;
-            background: var(--card-glass); border: 1px solid var(--border);
-            padding: 16px; border-radius: 28px; cursor: pointer;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .song-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-12px);
-            border-color: var(--accent);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-        }
-        .song-card img { 
-            width: 100%; aspect-ratio: 1; border-radius: 20px; 
-            object-fit: cover; margin-bottom: 15px;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
-        }
-        .song-card b { display: block; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .song-card span { font-size: 13px; color: var(--text-dim); }
-
-        /* BOTÓN EXPANDIR MINIMALISTA */
-        .expand-trigger {
-            width: 100%; margin-top: 20px; background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border); color: #fff; padding: 12px;
-            border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer;
-            transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
-        }
-        .expand-trigger:hover { background: var(--accent); border-color: var(--accent); }
-        .row-container.expanded { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); overflow-x: hidden; }
-
-        /* REPRODUCTOR ELITE FLOTANTE */
+        /* REPRODUCTOR PROFESIONAL COMPLETO */
         .floating-player {
-            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
-            width: 92%; max-width: 1000px; height: 100px;
-            background: rgba(15, 15, 15, 0.7); backdrop-filter: blur(35px);
-            border: 1px solid var(--border); border-radius: 35px;
-            display: flex; align-items: center; padding: 0 25px; z-index: 1000;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.7);
+            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
+            width: 94%; max-width: 900px; height: 95px;
+            background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(30px);
+            border: 1px solid var(--border); border-radius: 25px;
+            display: flex; align-items: center; padding: 0 20px; z-index: 1000;
         }
 
-        #waves {
-            position: absolute; left: 0; bottom: 0; width: 100%; height: 100%;
-            z-index: 0; opacity: 0.6; pointer-events: none; border-radius: 35px;
-        }
+        #waves { position: absolute; left: 0; bottom: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.4; border-radius: 25px; }
 
-        .track-display { width: 30%; display: flex; align-items: center; gap: 18px; z-index: 2; }
-        .track-display img { 
-            width: 65px; height: 65px; border-radius: 18px; 
-            object-fit: cover; border: 1px solid var(--border);
-        }
-        .track-meta b { display: block; font-size: 16px; letter-spacing: -0.5px; }
-        .track-meta span { font-size: 12px; color: var(--text-dim); }
+        .track-display { width: 30%; display: flex; align-items: center; gap: 12px; z-index: 2; }
+        .track-display img { width: 45px; height: 45px; border-radius: 10px; object-fit: cover; }
+        .track-meta b { display: block; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .track-meta span { font-size: 10px; color: var(--text-dim); }
 
-        .main-controls { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 10px; z-index: 2; }
-        .control-btns { display: flex; align-items: center; gap: 35px; }
-        .play-main-btn { 
-            width: 52px; height: 52px; background: #fff; color: #000; 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 22px; cursor: pointer; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .play-main-btn:hover { transform: scale(1.1); box-shadow: 0 0 20px rgba(255,255,255,0.4); }
+        .main-controls { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 2; }
+        .control-btns { display: flex; align-items: center; gap: 20px; }
+        
+        /* BOTONES DE ESTADO (Loop & Shuffle) */
+        .state-btn { font-size: 14px; cursor: pointer; color: var(--text-dim); transition: 0.3s; }
+        .state-btn.active { color: var(--accent); text-shadow: 0 0 10px var(--accent); }
 
-        .timeline-box { width: 100%; max-width: 450px; display: flex; align-items: center; gap: 15px; font-size: 11px; font-weight: 700; color: var(--text-dim); }
-        .timeline-rail { flex: 1; height: 5px; background: rgba(255,255,255,0.1); border-radius: 10px; cursor: pointer; position: relative; }
-        .timeline-fill { height: 100%; background: var(--accent); border-radius: 10px; width: 0%; box-shadow: 0 0 10px var(--accent-glow); }
+        .play-main-btn { width: 44px; height: 44px; background: #fff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
-        /* MÓVIL OPTIMIZADO */
+        .timeline-box { width: 100%; max-width: 400px; display: flex; align-items: center; gap: 10px; font-size: 9px; color: var(--text-dim); }
+        .timeline-rail { flex: 1; height: 4px; background: rgba(255,255,255,0.1); border-radius: 10px; cursor: pointer; }
+        .timeline-fill { height: 100%; background: var(--accent); border-radius: 10px; width: 0%; }
+
         @media (max-width: 768px) {
-            .main-scroll { padding: 20px; }
-            .hero { height: 180px; border-radius: 24px; }
-            .slide-content h2 { font-size: 26px; }
-            .song-card { flex: 0 0 155px; padding: 12px; border-radius: 22px; }
-            
-            .floating-player { height: 120px; bottom: 15px; padding: 15px; }
-            .track-display { width: 70%; }
-            .track-display img { width: 50px; height: 50px; }
-            .main-controls { width: 30%; flex: none; align-items: flex-end; }
-            .control-btns { gap: 10px; }
-            .control-btns span { display: none; }
-            .timeline-box { position: absolute; bottom: 15px; left: 20px; width: calc(100% - 40px); }
+            .floating-player { height: 90px; padding-bottom: 15px; }
+            .track-display { width: 55%; }
+            .main-controls { width: 45%; flex: none; align-items: flex-end; }
+            .control-btns { gap: 12px; }
+            .state-btn { font-size: 12px; }
+            .timeline-box { position: absolute; bottom: 8px; left: 15px; width: calc(100% - 30px); }
         }
     </style>
 </head>
 <body>
-    <div class="glow-overlay"></div>
-
     <main class="main-scroll">
         <div class="hero">
-            <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1493225255756-d9584f8606e9?w=1200')">
-                <div class="slide-content"><h2>Nuevos Lanzamientos</h2></div>
-            </div>
-            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1514525253361-bee8718a340b?w=1200')">
-                <div class="slide-content"><h2>Party Elite Mix</h2></div>
-            </div>
+            <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800')"><div class="slide-content"><h2>Party Elite</h2></div></div>
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1493225255756-d9584f8606e9?w=800')"><div class="slide-content"><h2>Nuevos Hits</h2></div></div>
         </div>
-
         <div id="app-body"></div>
     </main>
 
     <footer class="floating-player">
         <canvas id="waves"></canvas>
-        
         <div class="track-display">
             <img src="https://i.scdn.co/image/ab67616d0000b2734190897f564771746401037f" id="player-art">
-            <div class="track-meta">
-                <b id="player-t">No Se Ve</b>
-                <span id="player-a">Emilia, Ludmilla</span>
-            </div>
+            <div class="track-meta"><b id="player-t">No Se Ve</b><span id="player-a">Emilia, Ludmilla</span></div>
         </div>
-
         <div class="main-controls">
             <div class="control-btns">
-                <span onclick="prev()" style="cursor:pointer; opacity:0.8">⏮</span>
+                <span id="shuffle-btn" class="state-btn" onclick="toggleShuffle()">🔀</span>
+                <span onclick="prev()" style="cursor:pointer; font-size:18px;">⏮</span>
                 <div class="play-main-btn" id="play-btn" onclick="toggle()">▶</div>
-                <span onclick="next()" style="cursor:pointer; opacity:0.8">⏭</span>
+                <span onclick="next()" style="cursor:pointer; font-size:18px;">⏭</span>
+                <span id="loop-btn" class="state-btn" onclick="toggleLoop()">🔁</span>
             </div>
             <div class="timeline-box">
                 <span id="time-c">0:00</span>
@@ -197,15 +111,13 @@
 
 <script>
     const audio = document.getElementById('audio');
-    let tracks = [];
-    let current = 0;
+    let tracks = [], current = 0;
+    let isShuffle = false, isLoop = false;
     let audioCtx, analyser, canvas, ctx, dataArray;
 
     const demo = {
-        t: "No Se Ve", a: "Emilia, Ludmilla, Zecca",
-        img: "https://i.scdn.co/image/ab67616d0000b2734190897f564771746401037f",
-        file: "https://vidcache.net:8161/static/40538fae3f062419419efb3a65e092d82f731e9c/Emilia,%20Ludmilla,%20Zecca%20-%20No_se_ve.mp3%20(Official%20Video).mp3",
-        type: "MÁS ESCUCHADO"
+        t: "No Se Ve", a: "Emilia, Ludmilla", img: "https://i.scdn.co/image/ab67616d0000b2734190897f564771746401037f",
+        file: "https://vidcache.net:8161/static/40538fae3f062419419efb3a65e092d82f731e9c/Emilia,%20Ludmilla,%20Zecca%20-%20No_se_ve.mp3%20(Official%20Video).mp3", type: "TENDENCIAS"
     };
 
     async function load() {
@@ -220,69 +132,45 @@
     function render() {
         const body = document.getElementById('app-body');
         const groups = tracks.reduce((acc, t) => { acc[t.type] = acc[t.type] || []; acc[t.type].push(t); return acc; }, {});
-
         for (const type in groups) {
             const sec = document.createElement('div');
             sec.className = 'section';
-            sec.innerHTML = `
-                <h3 class="section-title">${type}</h3>
-                <div class="row-container" id="row-${type}">
-                    ${groups[type].map(t => `
-                        <div class="song-card" onclick="playSong(${tracks.indexOf(t)})">
-                            <img src="${t.img}">
-                            <b>${t.t}</b>
-                            <span>${t.a}</span>
-                        </div>
-                    `).join('')}
-                </div>
-                <button class="expand-trigger" onclick="document.getElementById('row-${type}').classList.toggle('expanded')">Ver Colección</button>
-            `;
+            sec.innerHTML = `<h3 class="section-title">${type}</h3><div class="row-container">${groups[type].map(t => `
+                <div class="song-card" onclick="playSong(${tracks.indexOf(t)})"><img src="${t.img}"><b>${t.t}</b><span>${t.a}</span></div>`).join('')}</div>`;
             body.appendChild(sec);
         }
     }
 
-    function initVisualizer() {
-        if (audioCtx) return;
-        canvas = document.getElementById("waves");
-        ctx = canvas.getContext("2d");
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioCtx.createAnalyser();
-        const source = audioCtx.createMediaElementSource(audio);
-        source.connect(analyser);
-        analyser.connect(audioCtx.destination);
-        analyser.fftSize = 128;
-        dataArray = new Uint8Array(analyser.frequencyBinCount);
+    function toggleShuffle() {
+        isShuffle = !isShuffle;
+        document.getElementById('shuffle-btn').classList.toggle('active', isShuffle);
+    }
 
-        function draw() {
-            requestAnimationFrame(draw);
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-            analyser.getByteFrequencyData(dataArray);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            const barWidth = (canvas.width / dataArray.length) * 2;
-            let x = 0;
-            for(let i = 0; i < dataArray.length; i++) {
-                let h = dataArray[i] / 2.5;
-                ctx.fillStyle = `rgba(255, 45, 85, ${h/120})`;
-                ctx.fillRect(x, canvas.height - h, barWidth, h);
-                x += barWidth + 2;
-            }
-        }
-        draw();
+    function toggleLoop() {
+        isLoop = !isLoop;
+        audio.loop = isLoop;
+        document.getElementById('loop-btn').classList.toggle('active', isLoop);
     }
 
     function playSong(i) {
-        initVisualizer();
-        current = i;
-        const s = tracks[i];
+        if (!audioCtx) initVisualizer();
+        current = i; const s = tracks[i];
         document.getElementById('player-art').src = s.img;
         document.getElementById('player-t').innerText = s.t;
         document.getElementById('player-a').innerText = s.a;
-        audio.src = s.file;
-        audio.play();
+        audio.src = s.file; audio.play();
         document.getElementById('play-btn').innerText = '⏸';
     }
+
+    function next() {
+        if (isShuffle) {
+            playSong(Math.floor(Math.random() * tracks.length));
+        } else {
+            playSong((current + 1) % tracks.length);
+        }
+    }
+
+    function prev() { playSong((current - 1 + tracks.length) % tracks.length); }
 
     function toggle() {
         if(!audio.src) return playSong(0);
@@ -290,8 +178,8 @@
         audio.paused ? (audio.play(), document.getElementById('play-btn').innerText = '⏸') : (audio.pause(), document.getElementById('play-btn').innerText = '▶');
     }
 
-    function next() { playSong((current + 1) % tracks.length); }
-    function prev() { playSong((current - 1 + tracks.length) % tracks.length); }
+    // CAMBIO AUTOMÁTICO AL TERMINAR
+    audio.onended = () => { if (!isLoop) next(); };
 
     audio.ontimeupdate = () => {
         const pct = (audio.currentTime / audio.duration) * 100 || 0;
@@ -301,20 +189,26 @@
         if(audio.duration) document.getElementById('time-t').innerText = fmt(audio.duration);
     };
 
-    function seek(e) {
-        audio.currentTime = (e.offsetX / e.currentTarget.offsetWidth) * audio.duration;
-    }
+    function seek(e) { audio.currentTime = (e.offsetX / e.currentTarget.offsetWidth) * audio.duration; }
 
-    // Auto-Slider
-    let sIdx = 0;
-    setInterval(() => {
-        const slides = document.querySelectorAll('.slide');
-        if(slides.length) {
-            slides[sIdx].classList.remove('active');
-            sIdx = (sIdx + 1) % slides.length;
-            slides[sIdx].classList.add('active');
+    function initVisualizer() {
+        canvas = document.getElementById("waves"); ctx = canvas.getContext("2d");
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        const source = audioCtx.createMediaElementSource(audio);
+        source.connect(analyser); analyser.connect(audioCtx.destination);
+        analyser.fftSize = 64; dataArray = new Uint8Array(analyser.frequencyBinCount);
+        function draw() {
+            requestAnimationFrame(draw); canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
+            analyser.getByteFrequencyData(dataArray); ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let barWidth = (canvas.width / dataArray.length) * 2; let x = 0;
+            for(let i = 0; i < dataArray.length; i++) {
+                let h = dataArray[i] / 4; ctx.fillStyle = `rgba(255, 45, 85, ${h/50})`;
+                ctx.fillRect(x, canvas.height - h, barWidth, h); x += barWidth + 2;
+            }
         }
-    }, 6000);
+        draw();
+    }
 
     load();
 </script>
