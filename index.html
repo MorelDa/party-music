@@ -2,273 +2,289 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Party Music Pro | SrPromax</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Party Music Pro</title>
     <style>
-        /* --- DISEÑO PREMIUM PARTY MUSIC (TODO EN UNO) --- */
+        /* --- DISEÑO BASE Y RESET --- */
         :root {
+            --pink: #ff2d55;
             --bg-dark: #050505;
-            --accent: #ff2d55;
-            --glass: rgba(255, 255, 255, 0.05);
+            --bg-card: rgba(255, 255, 255, 0.05);
             --text-main: #ffffff;
             --text-dim: #a7a7a7;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         
         body { 
-            background: radial-gradient(circle at 15% 15%, #1a080c 0%, var(--bg-dark) 60%);
+            background: radial-gradient(circle at top left, #1a080c, var(--bg-dark));
             color: var(--text-main);
             height: 100vh;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
-        /* Layout Principal */
-        .main-wrapper { display: flex; flex: 1; overflow: hidden; }
+        /* --- CONTENEDOR PRINCIPAL --- */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 120px; /* Espacio para el reproductor */
+        }
 
-        /* Sidebar (Solo PC) */
-        .sidebar { width: 260px; background: #000; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .nav-item { padding: 12px; color: var(--text-dim); cursor: pointer; display: flex; align-items: center; gap: 15px; font-weight: 600; border-radius: 8px; transition: 0.3s; }
-        .nav-item:hover { color: #fff; background: var(--glass); }
-
-        /* Contenido Central */
-        .content { flex: 1; overflow-y: auto; padding: 30px; scroll-behavior: smooth; }
-        .content::-webkit-scrollbar { width: 6px; }
-        .content::-webkit-scrollbar-thumb { background: var(--glass); border-radius: 10px; }
-
-        /* CARRUSEL PRO */
+        /* --- CARRUSEL DE CABECERA (PROMO) --- */
         .promo-slider {
-            width: 100%; height: 280px; border-radius: 20px; overflow: hidden;
-            position: relative; margin-bottom: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            width: 100%; height: 180px; border-radius: 15px; overflow: hidden;
+            position: relative; margin-bottom: 30px;
         }
-        .slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: 1s; background-size: cover; background-position: center; }
+        .slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: 0.8s; background-size: cover; background-position: center; }
         .slide.active { opacity: 1; }
-        .slide-content { width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); display: flex; align-items: flex-end; padding: 40px; }
-        .slide-content h2 { font-size: 40px; font-weight: 900; letter-spacing: -1px; }
+        .slide-overlay { width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); display: flex; align-items: flex-end; padding: 15px; }
+        .slide-overlay h2 { font-size: 24px; font-weight: 900; }
 
-        /* SECCIONES Y GRILLAS */
-        .section { margin-bottom: 40px; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .section-header h3 { font-size: 24px; font-weight: 800; }
-        .btn-ver-mas { color: var(--accent); font-size: 14px; font-weight: 700; cursor: pointer; padding: 5px 15px; border-radius: 20px; border: 1px solid var(--accent); transition: 0.3s; }
-        .btn-ver-mas:hover { background: var(--accent); color: #fff; }
+        /* --- SECCIONES (CARRUSEL DE UNA FILA) --- */
+        .section { margin-bottom: 35px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .section-header h3 { font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
 
-        .grid-container { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
-            gap: 25px; 
+        .row-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding-bottom: 10px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
         }
+        .row-container::-webkit-scrollbar { display: none; } /* Ocultar scrollbar */
 
-        /* TARJETAS DE CANCIONES (Carpetas) */
-        .card { 
-            background: var(--bg-card, rgba(255,255,255,0.03)); 
-            padding: 15px; border-radius: 16px; transition: 0.3s; cursor: pointer;
+        /* --- TARJETAS (CONTROL DE TAMAÑO) --- */
+        .card {
+            flex: 0 0 140px; /* Tamaño fijo para que no sean gigantes */
+            scroll-snap-align: start;
+            background: var(--bg-card);
+            padding: 10px;
+            border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.05);
         }
-        .card:hover { background: rgba(255,255,255,0.08); transform: translateY(-5px); }
-        .card img { width: 100%; aspect-ratio: 1; border-radius: 12px; margin-bottom: 15px; object-fit: cover; }
-        .card b { display: block; font-size: 15px; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card span { color: var(--text-dim); font-size: 13px; }
-
-        /* REPRODUCTOR (PIE) */
-        .player {
-            height: 100px; background: rgba(10,10,10,0.95); backdrop-filter: blur(20px);
-            border-top: 1px solid var(--glass); padding: 0 25px;
-            display: flex; align-items: center; justify-content: space-between;
+        .card img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 8px;
         }
-        .p-info { width: 30%; display: flex; align-items: center; gap: 15px; }
-        .p-info img { width: 55px; height: 55px; border-radius: 8px; }
+        .card b { display: block; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card span { font-size: 11px; color: var(--text-dim); }
+
+        /* --- BOTÓN VER MÁS --- */
+        .btn-more-container { width: 100%; display: flex; justify-content: center; margin-top: 10px; }
+        .btn-ver-mas {
+            background: transparent;
+            color: var(--pink);
+            border: 1px solid var(--pink);
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* --- REPRODUCTOR MÓVIL (CORREGIDO Y COMPLETO) --- */
+        .player-fixed {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            height: 105px; /* Altura suficiente para que no se corte */
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 10px 15px;
+            z-index: 9999;
+        }
+
+        .player-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
         
-        .p-controls { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        .p-btns { display: flex; align-items: center; gap: 25px; font-size: 20px; }
-        .play-circle { width: 40px; height: 40px; background: #fff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; }
+        .p-info { display: flex; align-items: center; gap: 10px; width: 65%; }
+        .p-info img { width: 45px; height: 45px; border-radius: 6px; object-fit: cover; }
+        .p-text { overflow: hidden; }
+        .p-text div:first-child { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .p-text div:last-child { font-size: 11px; color: var(--text-dim); }
 
-        .p-progress { width: 100%; max-width: 500px; display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--text-dim); }
-        .bar-bg { flex: 1; height: 4px; background: #333; border-radius: 5px; cursor: pointer; position: relative; }
-        .bar-fill { height: 100%; background: var(--accent); border-radius: 5px; width: 0%; }
-
-        /* --- VERSIÓN MÓVIL PROFESIONAL --- */
-        @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .content { padding: 15px; padding-bottom: 120px; }
-            .promo-slider { height: 160px; border-radius: 12px; }
-            .slide-content h2 { font-size: 22px; }
-
-            /* Secciones en Carrusel Horizontal en móvil */
-            .grid-container {
-                display: flex;
-                overflow-x: auto;
-                scroll-snap-type: x mandatory;
-                padding-bottom: 15px;
-                margin-right: -15px;
-            }
-            .card { flex: 0 0 150px; scroll-snap-align: start; padding: 10px; }
-            .card img { border-radius: 8px; }
-
-            /* Reproductor Móvil: Barra abajo */
-            .player { height: 110px; padding: 10px; flex-wrap: wrap; }
-            .p-info { width: 60%; }
-            .p-info img { width: 45px; height: 45px; }
-            .p-controls { width: 40%; flex: none; align-items: flex-end; }
-            .p-progress { width: 100%; margin-top: 10px; display: flex !important; }
-            .p-btns { gap: 15px; }
-            .volume-box { display: none; }
+        .p-controls { display: flex; align-items: center; gap: 15px; }
+        .play-btn { 
+            width: 38px; height: 38px; background: white; color: black; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 16px; cursor: pointer;
         }
 
-        /* Clase para cuando se pulsa "Ver más" */
-        .expanded { display: grid !important; overflow-x: visible !important; }
+        /* --- BARRA DE PROGRESO (VISIBLE Y FUNCIONAL) --- */
+        .player-bottom { width: 100%; display: flex; align-items: center; gap: 10px; }
+        .progress-box { flex: 1; height: 4px; background: #333; border-radius: 2px; position: relative; }
+        .progress-fill { height: 100%; background: var(--pink); width: 0%; border-radius: 2px; }
+        .time-label { font-size: 10px; color: var(--text-dim); min-width: 30px; }
 
+        /* --- MODO EXPANDIDO (VER MÁS) --- */
+        .expanded {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
+            overflow-x: hidden !important;
+            gap: 15px !important;
+        }
+
+        /* --- AJUSTES PARA PC --- */
+        @media (min-width: 769px) {
+            .main-content { padding: 40px; margin-left: 240px; }
+            .card { flex: 0 0 190px; }
+            .promo-slider { height: 300px; }
+            .player-fixed { height: 90px; flex-direction: row; padding: 0 30px; }
+            .player-top { width: 100%; margin: 0; }
+            .p-info { width: 30%; }
+            .player-bottom { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); width: 40%; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="main-wrapper">
-        <aside class="sidebar">
-            <div class="nav-item">🏠 Inicio</div>
-            <div class="nav-item">🔍 Buscar</div>
-            <div class="nav-item">📚 Biblioteca</div>
-        </aside>
-
-        <main class="content" id="main-content">
-            <div class="promo-slider">
-                <div class="slide active" style="background-image: url('https://picsum.photos/800/400?sig=1')">
-                    <div class="slide-content"><h2>TOP VIRAL 2026</h2></div>
-                </div>
-                <div class="slide" style="background-image: url('https://picsum.photos/800/400?sig=2')">
-                    <div class="slide-content"><h2>PARTY MIX VOL. 1</h2></div>
-                </div>
+    <main class="main-content">
+        <div class="promo-slider">
+            <div class="slide active" style="background-image: url('https://picsum.photos/800/400?sig=1')">
+                <div class="slide-overlay"><h2>LO MÁS VIRAL</h2></div>
             </div>
-
-            <div id="dynamic-sections">
-                </div>
-        </main>
-    </div>
-
-    <footer class="player">
-        <div class="p-info">
-            <img src="" id="track-img" style="display: none;">
-            <div>
-                <div id="track-t" style="font-weight: 700; font-size: 14px;">Party Music Pro</div>
-                <div id="track-a" style="color: var(--text-dim); font-size: 12px;">Selecciona una pista</div>
+            <div class="slide" style="background-image: url('https://picsum.photos/800/400?sig=2')">
+                <div class="slide-overlay"><h2>MIXES 2026</h2></div>
             </div>
         </div>
 
-        <div class="p-controls">
-            <div class="p-btns">
-                <span onclick="prevTrack()" style="cursor:pointer">⏮</span>
-                <div class="play-circle" id="play-btn" onclick="togglePlay()">▶</div>
-                <span onclick="nextTrack()" style="cursor:pointer">⏭</span>
+        <div id="sections-container">
             </div>
-            <div class="p-progress">
-                <span id="c-time">0:00</span>
-                <div class="bar-bg" id="progress-bar"><div class="bar-fill" id="fill"></div></div>
-                <span id="t-time">0:00</span>
+    </main>
+
+    <footer class="player-fixed">
+        <div class="player-top">
+            <div class="p-info">
+                <img src="" id="track-img" style="display: none;">
+                <div class="p-text">
+                    <div id="track-title">Selecciona música</div>
+                    <div id="track-artist">SrPromax</div>
+                </div>
+            </div>
+            <div class="p-controls">
+                <span onclick="prev()" style="font-size: 20px;">⏮</span>
+                <div class="play-btn" id="play-btn" onclick="toggle()">▶</div>
+                <span onclick="next()" style="font-size: 20px;">⏭</span>
             </div>
         </div>
-
-        <div class="volume-box" style="width: 30%; display: flex; justify-content: flex-end; gap: 10px; color: var(--text-dim);">
-            <span>🔊</span>
-            <input type="range" style="width: 80px; accent-color: #fff;" id="vol" min="0" max="1" step="0.1" value="1">
+        
+        <div class="player-bottom">
+            <span class="time-label" id="cur-time">0:00</span>
+            <div class="progress-box" onclick="seek(event)">
+                <div class="progress-fill" id="fill"></div>
+            </div>
+            <span class="time-label" id="total-time">0:00</span>
         </div>
     </footer>
 
-    <audio id="audio"></audio>
+    <audio id="audio-player"></audio>
 
-    <script>
-        const audio = document.getElementById('audio');
-        let songs = [];
-        let cur = 0;
+<script>
+    const audio = document.getElementById('audio-player');
+    let songs = [];
+    let current = 0;
 
-        // Cargar datos
-        async function load() {
-            try {
-                const res = await fetch('datos.json');
-                songs = await res.json();
-                render();
-            } catch (e) {
-                console.error("Falta datos.json");
-            }
+    // 1. CARGAR DATOS
+    async function loadData() {
+        try {
+            const res = await fetch('datos.json');
+            songs = await res.json();
+            render();
+        } catch (e) { console.error("Error al cargar datos.json"); }
+    }
+
+    // 2. RENDERIZAR (CARRUSELES + BOTÓN ABAJO)
+    function render() {
+        const container = document.getElementById('sections-container');
+        const groups = songs.reduce((acc, s) => {
+            acc[s.type] = acc[s.type] || [];
+            acc[s.type].push(s);
+            return acc;
+        }, {});
+
+        for (const type in groups) {
+            const sec = document.createElement('div');
+            sec.className = 'section';
+            sec.innerHTML = `
+                <div class="section-header"><h3>${type}</h3></div>
+                <div class="row-container" id="row-${type}">
+                    ${groups[type].map(s => `
+                        <div class="card" onclick="playSong(${songs.indexOf(s)})">
+                            <img src="${s.img}">
+                            <b>${s.t}</b>
+                            <span>${s.a}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="btn-more-container">
+                    <button class="btn-ver-mas" onclick="toggleGrid('${type}')">Ver más de ${type}</button>
+                </div>
+            `;
+            container.appendChild(sec);
         }
+    }
 
-        function render() {
-            const container = document.getElementById('dynamic-sections');
-            container.innerHTML = '';
-            
-            // Agrupar por tipo (Mixes, Recientes, etc)
-            const groups = songs.reduce((acc, s) => {
-                acc[s.type] = acc[s.type] || [];
-                acc[s.type].push(s);
-                return acc;
-            }, {});
+    // 3. LOGICA VER MÁS
+    function toggleGrid(type) {
+        const row = document.getElementById(`row-${type}`);
+        row.classList.toggle('expanded');
+    }
 
-            for (const type in groups) {
-                const section = document.createElement('section');
-                section.className = 'section';
-                section.innerHTML = `
-                    <div class="section-header">
-                        <h3>${type}</h3>
-                        <span class="btn-ver-mas" onclick="this.parentElement.nextElementSibling.classList.toggle('expanded')">Ver más</span>
-                    </div>
-                    <div class="grid-container">
-                        ${groups[type].map((s, i) => `
-                            <div class="card" onclick="playSong(${songs.indexOf(s)})">
-                                <img src="${s.img}">
-                                <b>${s.t}</b>
-                                <span>${s.a}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-                container.appendChild(section);
-            }
+    // 4. REPRODUCTOR
+    function playSong(i) {
+        current = i;
+        const s = songs[i];
+        document.getElementById('track-img').src = s.img;
+        document.getElementById('track-img').style.display = 'block';
+        document.getElementById('track-title').innerText = s.t;
+        document.getElementById('track-artist').innerText = s.a;
+        audio.src = s.file;
+        audio.play();
+        document.getElementById('play-btn').innerText = '⏸';
+    }
+
+    function toggle() {
+        if(!audio.src) return playSong(0);
+        audio.paused ? (audio.play(), document.getElementById('play-btn').innerText = '⏸') : (audio.pause(), document.getElementById('play-btn').innerText = '▶');
+    }
+
+    function next() { playSong((current + 1) % songs.length); }
+    function prev() { playSong((current - 1 + songs.length) % songs.length); }
+
+    audio.ontimeupdate = () => {
+        const pct = (audio.currentTime / audio.duration) * 100 || 0;
+        document.getElementById('fill').style.width = pct + "%";
+        const fmt = (s) => { const m=Math.floor(s/60), sec=Math.floor(s%60); return `${m}:${sec<10?'0'+sec:sec}`; };
+        document.getElementById('cur-time').innerText = fmt(audio.currentTime);
+        if(audio.duration) document.getElementById('total-time').innerText = fmt(audio.duration);
+    };
+
+    function seek(e) {
+        const pct = e.offsetX / e.currentTarget.offsetWidth;
+        audio.currentTime = pct * audio.duration;
+    }
+
+    // Carrusel fotos
+    let sIdx = 0;
+    setInterval(() => {
+        const slides = document.querySelectorAll('.slide');
+        if(slides.length) {
+            slides[sIdx].classList.remove('active');
+            sIdx = (sIdx + 1) % slides.length;
+            slides[sIdx].classList.add('active');
         }
+    }, 4000);
 
-        function playSong(i) {
-            cur = i;
-            const s = songs[i];
-            document.getElementById('track-img').src = s.img;
-            document.getElementById('track-img').style.display = 'block';
-            document.getElementById('track-t').innerText = s.t;
-            document.getElementById('track-a').innerText = s.a;
-            audio.src = s.file;
-            audio.play();
-            document.getElementById('play-btn').innerText = '⏸';
-        }
-
-        function togglePlay() {
-            if(!audio.src) return playSong(0);
-            audio.paused ? (audio.play(), document.getElementById('play-btn').innerText = '⏸') : (audio.pause(), document.getElementById('play-btn').innerText = '▶');
-        }
-
-        function nextTrack() { playSong((cur + 1) % songs.length); }
-        function prevTrack() { playSong((cur - 1 + songs.length) % songs.length); }
-
-        // Progreso
-        audio.ontimeupdate = () => {
-            const pct = (audio.currentTime / audio.duration) * 100 || 0;
-            document.getElementById('fill').style.width = pct + "%";
-            const fmt = (s) => { const m=Math.floor(s/60), sec=Math.floor(s%60); return `${m}:${sec<10?'0'+sec:sec}`; };
-            document.getElementById('c-time').innerText = fmt(audio.currentTime);
-            if(audio.duration) document.getElementById('t-time').innerText = fmt(audio.duration);
-        };
-
-        document.getElementById('progress-bar').onclick = (e) => audio.currentTime = (e.offsetX / e.currentTarget.offsetWidth) * audio.duration;
-        document.getElementById('vol').oninput = (e) => audio.volume = e.target.value;
-
-        // Carrusel automático
-        let sIdx = 0;
-        setInterval(() => {
-            const slides = document.querySelectorAll('.slide');
-            if(slides.length) {
-                slides[sIdx].classList.remove('active');
-                sIdx = (sIdx + 1) % slides.length;
-                slides[sIdx].classList.add('active');
-            }
-        }, 5000);
-
-        load();
-    </script>
+    loadData();
+</script>
 </body>
 </html>
